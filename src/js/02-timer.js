@@ -5,7 +5,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import Notiflix from "notiflix";
 // импорт notiflix
 import { Notify } from "notiflix/build/notiflix-notify-aio";
-//
+// деструктуризация Notiflix.Notify
 
 const options = {
   enableTime: true,
