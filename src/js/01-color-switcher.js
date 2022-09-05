@@ -7,9 +7,9 @@ const colorSwitcher = {
   stoptBtn: document.querySelector("[data-stop]"),
   intervalId: null,
   start() {
-    document.querySelector("[data-start]").disabled = true;
+    this.startBtn.disabled = true;
     //делаем кнопку старт неактивной
-    document.querySelector("[data-stop]").disabled = false;
+    this.stoptBtn.disabled = false;
     //делаем кнопку стоп активной
     colorSwitcher.intervalId = setInterval(() => {
       colorSwitcher.changeColorFn();
@@ -17,9 +17,9 @@ const colorSwitcher = {
     // запускаем интервальный запуск функции по смене цвета
   },
   stop() {
-    document.querySelector("[data-start]").disabled = false;
+    this.startBtn.disabled = false;
     //делаем кнопку старт активной
-    document.querySelector("[data-stop]").disabled = true;
+    this.stoptBtn.disabled = true;
     //делаем кнопку стоп неактивной
     clearInterval(colorSwitcher.intervalId);
     // выключаем интервальный запуск функции по смене цвета
@@ -38,5 +38,12 @@ const colorSwitcher = {
   // генератор случайных палитр
 };
 
-colorSwitcher.startBtn.addEventListener("click", colorSwitcher.start);
-colorSwitcher.stoptBtn.addEventListener("click", colorSwitcher.stop);
+colorSwitcher.startBtn.addEventListener(
+  "click",
+  colorSwitcher.start.bind(colorSwitcher)
+);
+colorSwitcher.stoptBtn.addEventListener(
+  "click",
+  colorSwitcher.stop.bind(colorSwitcher)
+);
+//делаем бинд чтобы работал this в методах объекта

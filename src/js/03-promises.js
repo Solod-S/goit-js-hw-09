@@ -29,19 +29,19 @@ const randomizePromises = {
   stepEl: document.querySelector('input[name="step"]'),
   amountEl: document.querySelector('input[name="amount"]'),
   colectingDate() {
-    randomizePromises.delay = Number(randomizePromises.delayEl.value);
+    this.delay = Number(this.delayEl.value);
     //записуем в ключ то, что введено в поле <input type="number" name="delay" required /> + приобразуем его к цифрам
-    randomizePromises.step = Number(randomizePromises.stepEl.value);
+    this.step = Number(this.stepEl.value);
     // записуем в ключ то, что введено в поле <input type="number" name="step" required /> + приобразуем его к цифрам
-    randomizePromises.amount = Number(randomizePromises.amountEl.value);
+    this.amount = Number(this.amountEl.value);
     // записуем в ключ то, что введено в поле <input type="number" name="amount" required /> + приобразуем его к цифрам
   },
   onSubmit(event) {
     event.preventDefault();
-    randomizePromises.colectingDate();
+    this.colectingDate();
     // обрыв перезагрузки при сабмите
 
-    let { delay, step, amount } = randomizePromises;
+    let { delay, step, amount } = this;
     // // деструктуризация нужных нам параметров (задержка, шаг и количество попыток)
 
     for (let attempt = 1; attempt <= amount; attempt += 1) {
@@ -67,7 +67,10 @@ const randomizePromises = {
   },
 };
 
-randomizePromises.formEl.addEventListener("submit", randomizePromises.onSubmit);
+randomizePromises.formEl.addEventListener(
+  "submit",
+  randomizePromises.onSubmit.bind(randomizePromises)
+);
 
 Notify.init({
   width: "280px",

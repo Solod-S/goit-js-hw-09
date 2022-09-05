@@ -18,7 +18,7 @@ const options = {
       // если выбраное время меньше текущего (прям вот текущего-текущего)
       Notify.failure("Please choose a date in the future");
       // вместо алерта выводим меседж
-      timer.startBtn.disabled = true;
+      this.startBtn.disabled = true;
       //делаем кнопку не активной (она может быть активной после прошлых действий)
       return;
       // обрываем функцию
@@ -42,12 +42,19 @@ const timer = {
   hoursEl: document.querySelector("[data-hours]"),
   minutesEl: document.querySelector("[data-minutes]"),
   secondsEl: document.querySelector("[data-seconds]"),
+  inputEl: document.querySelector("#datetime-picker"),
   intervalId: null,
   selectedDates: null,
   start() {
-    timer.intervalId = setInterval(() => {
+    this.inputEl.disabled = true;
+    // блокируем выбор даты
+    this.startBtn.disabled = true;
+    // кнопка старт снова станет не активна
+    this.startBtn.classList.remove("is_active");
+    //убирем класс css (украшательство которое подсвечивает то что наша кнопка активная)
+    this.intervalId = setInterval(() => {
       // записуем в свойство объекта интервал айди
-      const deltaTime = timer.selectedDates - Date.now();
+      const deltaTime = this.selectedDates - Date.now();
       // получаем разницу между выбраной датой и текущим временем (время старта)
       console.log(convertMs(deltaTime));
       //{days: 0, hours: 0, minutes: 0, seconds: 0}
@@ -55,48 +62,49 @@ const timer = {
         // когда время станет = или < 0
         Notify.info("The end!");
         // выдадим меседж
-        clearTimeout(timer.intervalId);
+        clearTimeout(this.intervalId);
         // прикратим интервальный запуск функции
-        timer.startBtn.classList.remove("is_active");
-        //убирем класс css (украшательство)
-        timer.startBtn.disabled = true;
-        // кнопка старт снова станет не активна
+        this.inputEl.disabled = false;
+        // разблокируем выбор даты
         return;
       }
-      timer.updateClockFace(convertMs(deltaTime));
+      this.updateClockFace(convertMs(deltaTime));
     }, 1000);
   },
   stop() {
-    timer.startBtn.disabled = true;
+    this.inputEl.disabled = false;
+    // разблокируем выбор даты
+    this.startBtn.disabled = true;
     // кнопка старт снова станет не активна
-    timer.startBtn.classList.remove("is_active");
+    this.startBtn.classList.remove("is_active");
     //убирем класс css (украшательство)
-    clearTimeout(timer.intervalId);
+    clearTimeout(this.intervalId);
     // прикратим интервальный запуск функции
-    timer.selectedDates = null;
+    this.selectedDates = null;
     // обнуляем выбраное время
-    timer.daysEl.textContent = "00";
-    timer.hoursEl.textContent = "00";
-    timer.minutesEl.textContent = "00";
-    timer.secondsEl.textContent = "00";
+    this.daysEl.textContent = "00";
+    this.hoursEl.textContent = "00";
+    this.minutesEl.textContent = "00";
+    this.secondsEl.textContent = "00";
     //обнуляем вывод времени в html
   },
   updateClockFace(deltaTime) {
     const { days, hours, minutes, seconds } = deltaTime;
     // деструктуризация
-    timer.daysEl.textContent = pad(days);
-    timer.hoursEl.textContent = pad(hours);
-    timer.minutesEl.textContent = pad(minutes);
-    timer.secondsEl.textContent = pad(seconds);
+    this.daysEl.textContent = pad(days);
+    this.hoursEl.textContent = pad(hours);
+    this.minutesEl.textContent = pad(minutes);
+    this.secondsEl.textContent = pad(seconds);
     // записуем в html текущии значения из deltaTime (часы, минуты....) + используем функцию pad, которая позвоялет правильно записывать 1-9 ==> 01-09
   },
 };
+
 timer.startBtn.disabled = true;
 // по умолчанию кнопка старт не активна
 
-timer.startBtn.addEventListener("click", timer.start);
+timer.startBtn.addEventListener("click", timer.start.bind(timer));
 // по клику на кнопку старт запускаем функцию старта
-timer.stoptBtn.addEventListener("click", timer.stop);
+timer.stoptBtn.addEventListener("click", timer.stop.bind(timer));
 // по клику на кнопку стоп запускаем функцию стопа
 
 function convertMs(ms) {
